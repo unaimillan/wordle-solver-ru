@@ -1,51 +1,119 @@
 <html lang="ru">
 <head>
     <title>Wordle (ru) solver</title>
-	<style>
-		p {
-			margin: 0;
-			padding: 0;
-			display: inline;
-		}
-		div {
-			margin: 5px 0;
-		}
-	</style>
+    <style>
+        p {
+            margin: 0;
+            padding: 0;
+            display: inline;
+        }
+
+        div {
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
 <script>
-    document.body.addEventListener('change', function (evt) {
-            document.querySelector('#word-len-text').innerHTML = evt.target.value
+    let wordList = []
+
+    async function loadWordList(len) {
+        wordList = (await fetch(`ru_${len}.txt`).then(function (response) {
+            return response.text()
+        })).split('\n')
+    }
+
+    window.onload = function () {
+        document.querySelector('#regex-pattern-input').value = '?'.repeat(5)
+        loadWordList(5)
+
+        document.querySelector('#word-length-input').addEventListener('change', function (evt) {
+            const wordLen = Number(evt.target.value)
+            document.querySelector('#word-length-p').innerHTML = wordLen.toString()
+            document.querySelector('#regex-pattern-input').value = '?'.repeat(wordLen)
+            document.querySelector('#included-letters-input').value = ''
+            document.querySelector('#excluded-letters-input').value = ''
+            loadWordList(wordLen)
         })
+    }
+
+    function runSearchWrapper() {
+        // const wordLen = Number(document.querySelector('#word-length-input'))
+        const wordPattern = new RegExp(document.querySelector('#regex-pattern-input').value.replaceAll('?', '.'))
+        const includedLetters = Array.from(document.querySelector('#included-letters-input').value)
+        const excludedLetters = Array.from(document.querySelector('#excluded-letters-input').value)
+        const considerProperNames = document.querySelector('#proper-name-checkbox').checked
+
+        let searchResults = []
+        for (let i = 0; i < wordList.length; i++) {
+            if (searchResults.length > 10) {
+                break
+            }
+            const word = wordList[i]
+            const wordLower = word.toLowerCase()
+            if (!considerProperNames) {
+                if (word !== wordLower) {
+                    continue
+                }
+            }
+            if (wordLower.match(wordPattern) !== null) {
+                if (includedLetters.map(v => wordLower.includes(v)).every(v => v === true)) {
+                    if (excludedLetters.map(v => wordLower.includes(v)).every(v => v === false)) {
+                        searchResults.push(word)
+                    }
+                }
+            }
+        }
+        document.querySelector('#result-list-ul').innerHTML =
+            searchResults.map(value => "<li>" + value + "</li>").join('')
+    }
 </script>
+<h3>
+    Ответы для русской вариации игры Wordle (Вордле) (ру/ru)
+</h3>
 <div>
     <label>
         Длина вводимого слова:
-        <input id="word-len-input" type="range" min="5" max="8" step="1" value="5">
+        <input id="word-length-input" type="range" min="5" max="8" step="1" value="5">
     </label>
-    <p id="word-len-text">5</p>
+    <p id="word-length-p">5</p>
 </div>
 <div>
-	<label>
-		Буквы вствечаются:
-		<input type="text">
-	</label>
+    <label title="Вводятся известные наверняка буквы, неизвестные обозначаются символом &quot;?&quot; (знаком вопроса)">
+        Шаблон слова (regex):
+        <input type="text" id="regex-pattern-input">
+    </label>
 </div>
 <div>
-	<label>
-		Буквы не вствечаются:
-		<input type="text">
-	</label>
+    <label title="Набор букв подряд">
+        Буквы вствечаются:
+        <input type="text" id="included-letters-input">
+    </label>
 </div>
 <div>
-	<p>Результаты:</p>
-	<div>
-		<ul>
-			<li>1</li>
-			<li>2</li>
-			<li>3</li>
-		</ul>
-	</div>
+    <label title="Набор букв подряд">
+        Буквы не вствечаются:
+        <input type="text" id="excluded-letters-input">
+    </label>
+</div>
+<div>
+    <label>
+        Именна собственные
+        <input type="checkbox" checked id="proper-name-checkbox">
+    </label>
+</div>
+<div>
+    <button type="submit" onclick="runSearchWrapper()">gogogo</button>
+</div>
+<div>
+    <p>Результаты:</p>
+    <div>
+        <ul id="result-list-ul">
+            <li>хихи</li>
+            <li>хаха</li>
+            <li>хехе</li>
+        </ul>
+    </div>
 </div>
 
 </body>
