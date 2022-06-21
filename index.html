@@ -1,0 +1,52 @@
+<html lang="ru">
+<head>
+    <title>Wordle (ru) solver</title>
+	<style>
+		p {
+			margin: 0;
+			padding: 0;
+			display: inline;
+		}
+		div {
+			margin: 5px 0;
+		}
+	</style>
+</head>
+<body>
+<script>
+    document.body.addEventListener('change', function (evt) {
+            document.querySelector('#word-len-text').innerHTML = evt.target.value
+        })
+</script>
+<div>
+    <label>
+        Длина вводимого слова:
+        <input id="word-len-input" type="range" min="5" max="8" step="1" value="5">
+    </label>
+    <p id="word-len-text">5</p>
+</div>
+<div>
+	<label>
+		Буквы вствечаются:
+		<input type="text">
+	</label>
+</div>
+<div>
+	<label>
+		Буквы не вствечаются:
+		<input type="text">
+	</label>
+</div>
+<div>
+	<p>Результаты:</p>
+	<div>
+		<ul>
+			<li>1</li>
+			<li>2</li>
+			<li>3</li>
+		</ul>
+	</div>
+</div>
+
+</body>
+</html>
