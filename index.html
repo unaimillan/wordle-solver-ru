@@ -39,9 +39,9 @@
 
     function runSearchWrapper() {
         // const wordLen = Number(document.querySelector('#word-length-input'))
-        const wordPattern = new RegExp(document.querySelector('#regex-pattern-input').value.replaceAll('?', '.'))
-        const includedLetters = Array.from(document.querySelector('#included-letters-input').value)
-        const excludedLetters = Array.from(document.querySelector('#excluded-letters-input').value)
+        const wordPattern = new RegExp(document.querySelector('#regex-pattern-input').value.replaceAll('?', '.').toLowerCase())
+        const includedLetters = Array.from(document.querySelector('#included-letters-input').value.toLowerCase())
+        const excludedLetters = Array.from(document.querySelector('#excluded-letters-input').value.toLowerCase())
         const considerProperNames = document.querySelector('#proper-name-checkbox').checked
 
         let searchResults = []
